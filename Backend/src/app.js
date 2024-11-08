@@ -22,7 +22,11 @@ app.use(cors({
 app.use(e.json({limit:"32kb"}));
 app.use(e.urlencoded({limit:"32kb",extended:true}));
 
+import userRouter from './routes/user.routes.js';
+import cycleRouter from './routes/cycle.routes.js';
 
+app.use("/user",userRouter);
+app.use("/cycle",cycleRouter);
 
 
 export {app}
