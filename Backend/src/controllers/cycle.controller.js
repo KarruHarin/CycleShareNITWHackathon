@@ -5,7 +5,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 
 import Cycle from "../models/Cycle"; // Assuming Cycle model is imported
 
-const RegisterCycle = async (req, res) => {
+const registerCycle = async (req, res) => {
   try {
     //cycleDetails and codition contain sub objects in them parse data properly from frontend
     const {
@@ -45,7 +45,7 @@ const RegisterCycle = async (req, res) => {
   }
 };
 
-const EditCycle = async (req,res)=>{
+const editCycle = async (req,res)=>{
    try {
     const {
         cycleId,
@@ -74,4 +74,4 @@ const EditCycle = async (req,res)=>{
    }
 }
 
-export default RegisterCycle;
+export {registerCycle,editCycle};
