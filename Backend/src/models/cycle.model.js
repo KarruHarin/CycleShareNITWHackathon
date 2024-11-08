@@ -30,10 +30,12 @@ const cycleSchema = new Schema(
         brakesWorking: {
           type: Boolean,
           required: true, // true if brakes are functional
+          default:true
         },
         hasAirInTires: {
           type: Boolean,
           required: true, // true if tires have air
+          default:true
         },
         chainCondition: {
           type: String,
@@ -56,6 +58,10 @@ const cycleSchema = new Schema(
     costPerDay:{
         type:Number,
         required:true
+    },
+    isAvailable:{
+      type:Boolean,
+      required:true
     }
   },
   { timestamps: true }
