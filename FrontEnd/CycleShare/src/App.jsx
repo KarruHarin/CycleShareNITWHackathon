@@ -1,18 +1,50 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import LoginForm from './Login/Login'
-import Map from './Map/Map'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Register from './Register/Register';
+import Login from './Login/Login';
+import Verification from './Verification/Verification';
+import HomePage from './Homepage/Homepage';
+import RentCyclePage from './Rentcycle/Rentcycle'; 
+import Sidebar from './Sidebar/Sidebar';
+import './index.css';
+import Cycle from './Cycle/Cycle';
+
+const Layout = ({ children }) => (
+  <div>
+    <Sidebar />
+    <div className="main-content">
+      {children}
+    </div>
+  </div>
+);
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-<Map/>
-    </>
-  )
+    <Routes>
+      
+      <Route path="/" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/otp" element={<Verification />} />
+      <Route path="/cycles/:id" element={<Cycle/>}/>
+    
+      <Route
+        path="/homepage"
+        element={
+          <Layout>
+            <HomePage />
+          </Layout>
+        }
+      />
+      <Route
+        path="/rent"
+        element={
+          <Layout>
+            <RentCyclePage/>
+          </Layout>
+        }
+      />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
