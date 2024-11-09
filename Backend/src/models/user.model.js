@@ -1,4 +1,5 @@
 import mongoose,{Schema} from "mongoose";
+
 import argon2 from "argon2";
 import jwt from "jsonwebtoken"
 const userSchema = new Schema({
@@ -33,11 +34,19 @@ const userSchema = new Schema({
         type:Boolean,
         default:false
     },
-    
+    rating:{
+       type:Number,
+       enum:[1,2,3,4,5]
+    },
+    reviews:{
+        type:Schema.Types.ObjectId,
+        ref:"Review"
+    },
     bicycle:{
         type:Schema.Types.ObjectId,
         ref:"Cycle"
-    }
+    },
+
 },{timestamps:true});
 
 userSchema.pre("save", async function(next) {
