@@ -2,6 +2,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
+import { sendVerificationCode } from "../middlewares/Email.js";
 
 const generateAccessAndRefreshToken = async (userId) => {
   try {
@@ -31,10 +32,11 @@ const registerUser = async (req, res) => {
     if (existedUser) {
       throw new ApiError(400, "User already exists");
     }
-
+let verificationCode = Math.floor(100000+Math.random()*900000).toString();
     // Create new user
-    const user = await User.create({ username, email, password,college });
+    const user = await User.create({ username, email, password,college,verificationCode});
 
+    sendVerificationCode(email,verificationCode);
     // Retrieve created user without sensitive information
     const createdUser = await User.findById(user._id).select(
       "-password -refreshToken"
