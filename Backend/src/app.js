@@ -3,6 +3,7 @@ import cors from "cors";
 import http from "http"
 import {Server} from "socket.io"
 const app = e();
+import SocketService from "./services/socket.service.js";
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", process.env.CORS_ORIGIN);
@@ -25,46 +26,8 @@ app.use(e.urlencoded({limit:"32kb",extended:true}));
 
 const server = http.createServer(app)
 
-const io = new Server(server,{
-  cors:{
-    origin:"http://localhost:5173",
-    methods:["GET","POST"]
-  }
-});
-// Store active connections
-const activeUsers = new Map();
+const socketService = new SocketService(server);
 
-io.on('connection', (socket) => {
-    console.log('Client connected');
-    
-    socket.on('register', (userId) => {
-        activeUsers.set(socket.id, userId);
-    });
-
-    socket.on('updateLocation', async ({ userId, type, coordinates }) => {
-        try {
-            const location = new Location({
-                type,
-                userId,
-                coordinates
-            });
-            await location.save();
-            
-            // Broadcast to all other clients
-            socket.broadcast.emit('locationUpdate', {
-                userId,
-                type,
-                coordinates
-            });
-        } catch (error) {
-            console.error('Error saving location:', error);
-        }
-    });
-
-    socket.on('disconnect', () => {
-        activeUsers.delete(socket.id);
-    });
-});
 
 
 
@@ -75,9 +38,11 @@ io.on('connection', (socket) => {
 
 import userRouter from './routes/user.routes.js';
 import cycleRouter from './routes/cycle.routes.js';
+import bookingRouter from './routes/booking.routes.js'
 
 app.use("/user",userRouter);
 app.use("/cycle",cycleRouter);
+app.use("/booking",bookingRouter)
 
 
-export {server}
+export {server,app,socketService}

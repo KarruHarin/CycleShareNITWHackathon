@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../Sidebar/Sidebar';
 import { FaBars } from 'react-icons/fa';
+import { SocketProvider } from '../context/SocketContext.jsx';
+import { NotificationContainer } from '../Notification/NotificationContainer.jsx';
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -22,9 +24,13 @@ const Layout = () => {
         </div>
       )}
       </div>
-      <div className='w-screen '>
-        <Outlet/>
+      <SocketProvider>
+      <div>
+        {/* Your existing layout components */}
+        <NotificationContainer />
+        <Outlet />
       </div>
+    </SocketProvider>
     </div>
   );
 };

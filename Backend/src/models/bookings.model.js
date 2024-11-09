@@ -17,9 +17,9 @@ const bookingSchema = new Schema(
     bookingDate: {
       type: Date,
     },
-    hireProgress:{
-          type:String,
-          enum:["Booked","Completed"]
+    status:{
+      type:String,
+      enum:[accepted , rejected , pending]
     },
     bookingTimeSlot: {
       startTime: {
