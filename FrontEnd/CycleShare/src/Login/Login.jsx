@@ -20,7 +20,8 @@ function Login() {
      console.log(res)
      localStorage.setItem("AccessToken",res.data.data.accessToken)
      localStorage.setItem("RefreshToken",res.data.data.accessToken)
-
+     localStorage.setItem("id",res.data.data.user._id)
+navigate("/homepage")
  
 
     }catch(e){

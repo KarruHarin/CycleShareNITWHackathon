@@ -14,7 +14,11 @@ const registerCycle = async (req, res) => {
       returningLocation,
       costPerHour,
       costPerDay,
+      isAvailable,
+      map,
+
     } = req.body;
+    console.log(req.body)
     // Create a new cycle document
     const newCycle = new Cycle({
       owner,
@@ -23,7 +27,9 @@ const registerCycle = async (req, res) => {
       bookingLocation,
       returningLocation,
       costPerHour,
+      isAvailable,
       costPerDay,
+      map,
     });
 
     // Save the cycle to the database

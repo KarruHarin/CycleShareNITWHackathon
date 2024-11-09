@@ -65,14 +65,12 @@ const router = createBrowserRouter([
   }
 ])
 
-const [user, setUser] = useState({});
 
 // Render the app inside the root
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <userContext.Provider value={{ user, setUser }}>
+ 
     <RouterProvider router={router} />
 
-    </userContext.Provider>
   </React.StrictMode>
 );
