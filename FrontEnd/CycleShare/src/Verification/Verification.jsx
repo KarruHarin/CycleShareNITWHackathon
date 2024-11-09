@@ -10,7 +10,7 @@ function Verification() {
   // Handle OTP input change
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
-    if (`/[^0-9]/.test(value)`) return; // Allow only numeric input
+    if (/[^0-9]/.test(value)) return; // Allow only numeric input
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -42,15 +42,15 @@ function Verification() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-purple-600 via-indigo-500 to-blue-500">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-r from-yellow-100 to-yellow-200">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: 'easeInOut' }}
-        className="w-full max-w-sm p-8 space-y-6 bg-white shadow-2xl rounded-lg"
+        className="w-full max-w-sm p-8 space-y-6 bg-white shadow-2xl rounded-lg border-2 border-yellow-400"
       >
         <motion.h2
-          className="text-3xl font-bold text-indigo-800 text-center mb-6"
+          className="text-3xl font-bold text-gray-900 text-center mb-6"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -63,11 +63,11 @@ function Verification() {
               <motion.input
                 key={index}
                 type="text"
-                id={`otp-input-${index}`}  // Corrected the id format
+                id={`otp-input-${index}`}
                 value={digit}
                 onChange={(e) => handleOtpChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
-                className="w-12 h-12 text-center text-2xl font-bold border border-gray-300 rounded-md shadow-sm focus:ring-4 focus:ring-emerald-400 focus:outline-none"
+                className="w-12 h-12 text-center text-2xl font-bold border-2 border-yellow-300 rounded-md shadow-sm focus:ring-4 focus:ring-yellow-200 focus:border-yellow-400 focus:outline-none transition-all duration-300"
                 maxLength={1}
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -78,7 +78,7 @@ function Verification() {
           </div>
           <motion.button
             type="submit"
-            className="w-full py-3 font-semibold text-white bg-indigo-600 rounded-md hover:bg-indigo-700 transition-colors duration-300 shadow-lg"
+            className="w-full py-3 font-semibold text-gray-900 bg-yellow-400 rounded-md hover:bg-yellow-500 transition-colors duration-300 shadow-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             initial={{ y: 20, opacity: 0 }}

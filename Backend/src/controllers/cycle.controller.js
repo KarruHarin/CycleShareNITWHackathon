@@ -183,4 +183,4 @@ const getCycleDetails = async (req, res) => {
 };
 
 
-export {registerCycle,editCycle};
+export {registerCycle,editCycle,getCycleDetails};
