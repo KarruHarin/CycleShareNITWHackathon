@@ -1,4 +1,5 @@
-import React from 'react';
+// src/App.js
+import React, { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Register from './Register/Register';
 import Login from './Login/Login';
@@ -6,6 +7,7 @@ import Verification from './Verification/Verification';
 import HomePage from './Homepage/Homepage';
 import RentCyclePage from './Rentcycle/Rentcycle'; 
 import Sidebar from './Sidebar/Sidebar';
+import { userContext } from './Context/userContext';
 import './index.css';
 import Cycle from './Cycle/Cycle';
 import UserProfile from './user/userProfile';
@@ -22,6 +24,7 @@ const Layout = ({ children }) => (
 );
 
 function App() {
+
   return (
     // <Routes>
       

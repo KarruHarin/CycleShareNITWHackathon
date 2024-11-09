@@ -1,7 +1,9 @@
 // src/pages/Register.js
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { userContext } from '../Context/userContext';
 
 const states = [
   { "state_name": "Andaman and Nicobar Islands", "abbreviation": "AN" },
@@ -79,14 +81,27 @@ function Register() {
   const [selectedState, setSelectedState] = useState('');
   const [selectedCollege, setSelectedCollege] = useState('');
   const navigate = useNavigate();
-
+const {setUser} = useContext(userContext)
   const handleStateChange = (e) => setSelectedState(e.target.value);
   const handleCollegeChange = (e) => setSelectedCollege(e.target.value);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
+    let name= e.target[0].value
+    let email=e.target[1].value
+    let password = e.target[2].value
+    let state = e.target[3].value
+    let college = e.target[4].value
     // Here you can add any form submission logic, e.g., send data to the server
-    navigate('/login');
+    try{
+    const res = await axios.post("http://localhost:8000/user/register",{username:name,email:email,password:password,college:college})
+   console.log(res)
+   setUser(res.data.data)
+   navigate(`/otp`);
+    // navigate('/login');
+    }catch(e){
+        console.log(e)
+    }
   };
 
   return (

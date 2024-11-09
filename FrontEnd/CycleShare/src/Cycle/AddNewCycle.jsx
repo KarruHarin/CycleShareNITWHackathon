@@ -1,8 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { MapPin } from 'lucide-react';
 
 const AddCycleForm = () => {
+  const user = localStorage.getItem("id");
+
+  useEffect(() => {
+    console.log("user", user);
+  }, [user]);
+
   const [formData, setFormData] = useState({
+    owner: user,
     cycleDetails: {
       cycleImage: '',
       color: '',
@@ -19,12 +27,98 @@ const AddCycleForm = () => {
     returningLocation: '',
     costPerHour: '',
     costPerDay: '',
-    isAvailable: true
+    isAvailable: true,
+    map: {
+      bookingCoordinates: [],
+      returningCoordinates: []
+    }
   });
 
-  const handleSubmit = (e) => {
+  const [currentCoordinates, setCurrentCoordinates] = useState({
+    latitude: null,
+    longitude: null,
+  });
+
+  // Get current location using Geolocation API
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentCoordinates({ latitude, longitude });
+        },
+        (error) => {
+          console.error("Error fetching geolocation: ", error);
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+
+    // Fetch coordinates for booking and returning locations
+    const bookingCoordinates = await getCoordinates(formData.bookingLocation);
+    const returningCoordinates = await getCoordinates(formData.returningLocation);
+
+    // Automatically set current coordinates for booking location if not provided
+    const updatedFormData = {
+      ...formData,
+      map: {
+        coordinates:[currentCoordinates.longitude, currentCoordinates.latitude], // Set to current coordinates if empty
+     
+      }
+    };
+
+    try {
+      const response = await axios.post("http://localhost:8000/cycle/registerCycle", updatedFormData);
+      console.log("Cycle added successfully:", response.data);
+      
+      // Clear form data after submission
+      setFormData({
+        cycleDetails: {
+          cycleImage: '',
+          color: '',
+          model: '',
+          gearCount: '',
+          cycleCompany: ''
+        },
+        condition: {
+          brakesWorking: true,
+          hasAirInTires: true,
+          chainCondition: 'Good'
+        },
+        bookingLocation: '',
+        returningLocation: '',
+        costPerHour: '',
+        costPerDay: '',
+        isAvailable: true,
+        map: {
+          bookingCoordinates: [],
+          returningCoordinates: []
+        }
+      });
+    } catch (error) {
+      console.error("Error adding cycle:", error);
+    }
+  };
+
+  // Function to fetch coordinates using a geocoding API (e.g., OpenStreetMap, Google Maps API)
+  const getCoordinates = async (location) => {
+    try {
+      // Example using OpenStreetMap Nominatim API
+      const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`);
+      if (response.data && response.data.length > 0) {
+        const { lon, lat } = response.data[0];
+        return [parseFloat(lon), parseFloat(lat)];
+      }
+      return [];
+    } catch (error) {
+      console.error("Error fetching coordinates:", error);
+      return [];
+    }
   };
 
   const handleInputChange = (section, field, value) => {
@@ -47,12 +141,10 @@ const AddCycleForm = () => {
   return (
     <div className="min-h-screen bg-amber-50 py-8">
       <div className="max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-        {/* Header */}
         <div className="bg-amber-400 px-6 py-4">
           <h1 className="text-2xl font-bold text-black">Add New Cycle</h1>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-8">
           {/* Cycle Details Section */}
           <div className="space-y-4">
@@ -60,6 +152,7 @@ const AddCycleForm = () => {
               Cycle Details
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Add cycle details inputs here */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Cycle Image URL
@@ -118,12 +211,15 @@ const AddCycleForm = () => {
             </div>
           </div>
 
+
+
           {/* Condition Section */}
           <div className="space-y-4">
             <h3 className="text-xl font-semibold text-black border-b border-amber-200 pb-2">
               Condition
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Add condition inputs here */}
               <div className="flex items-center space-x-2">
                 <input
                   type="checkbox"
@@ -163,6 +259,8 @@ const AddCycleForm = () => {
             </div>
           </div>
 
+
+
           {/* Location and Pricing Section */}
           <div className="space-y-4">
             <h3 className="text-xl font-semibold text-black border-b border-amber-200 pb-2">
@@ -197,6 +295,7 @@ const AddCycleForm = () => {
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-amber-400" size={20} />
                 </div>
               </div>
+              {/* Add cost inputs here */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Cost Per Hour ($)
@@ -222,18 +321,7 @@ const AddCycleForm = () => {
             </div>
           </div>
 
-          {/* Availability */}
-          <div className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              className="w-4 h-4 text-amber-400 border-amber-200 rounded focus:ring-amber-400"
-              checked={formData.isAvailable}
-              onChange={(e) => handleInputChange(null, 'isAvailable', e.target.checked)}
-            />
-            <label className="text-sm font-medium text-gray-700">
-              Available for Rent
-            </label>
-          </div>
+
 
           {/* Submit Button */}
           <button
