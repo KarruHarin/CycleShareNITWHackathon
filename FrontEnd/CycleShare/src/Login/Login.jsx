@@ -1,17 +1,32 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const navigate = useNavigate();
   const handleEmailChange = (e) => setEmail(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // Add your login logic here (e.g., API call)
+
+    try{
+      const res = await axios.post("http://localhost:8000/user/login",{email:email,password:password})
+     console.log(res)
+     localStorage.setItem("AccessToken",res.data.data.accessToken)
+     localStorage.setItem("RefreshToken",res.data.data.accessToken)
+
+ 
+
+    }catch(e){
+          console.log(e)
+      }
+
     console.log('Email:', email);
     console.log('Password:', password);
   };

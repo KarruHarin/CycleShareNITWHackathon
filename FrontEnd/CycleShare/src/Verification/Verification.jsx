@@ -1,16 +1,18 @@
-// src/pages/Verification.js
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+
+import { userContext } from '../Context/userContext'; 
+import axios from 'axios';
 
 function Verification() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const navigate = useNavigate();
-
+const {user} = useContext(userContext)
   // Handle OTP input change
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
-    if (`/[^0-9]/.test(value)`) return; // Allow only numeric input
+    if (/[^0-9]/.test(value)) return; // Allow only numeric input
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -31,11 +33,14 @@ function Verification() {
   };
 
   // Handle form submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Here you can add OTP validation logic
+
     if (otp.join('').length === 6) {
-      navigate('/home');
+  let code = otp.join('')
+        const res = await axios.post("http://localhost:8000/user/verify",{email:user.email,verificationCode:code})
+        console.log(res)
+      navigate('/login');
     } else {
       alert('Please enter a valid OTP');
     }
@@ -63,12 +68,14 @@ function Verification() {
               <motion.input
                 key={index}
                 type="text"
-                id={`otp-input-${index}`}  // Corrected the id format
+                id={`otp-input-${index}`}
                 value={digit}
                 onChange={(e) => handleOtpChange(e, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 className="w-12 h-12 text-center text-2xl font-bold border border-gray-300 rounded-md shadow-sm focus:ring-4 focus:ring-emerald-400 focus:outline-none"
                 maxLength={1}
+                inputMode="numeric"
+                pattern="[0-9]*"
                 initial={{ x: -20, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
                 transition={{ duration: 0.4, delay: 0.4 + index * 0.1 }}
