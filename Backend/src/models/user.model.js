@@ -1,5 +1,6 @@
 import mongoose,{Schema} from "mongoose";
-
+import argon2 from "argon2";
+import jwt from "jsonwebtoken"
 const userSchema = new Schema({
     username: {
         type: String,
@@ -24,6 +25,15 @@ const userSchema = new Schema({
         type:String,
         required:true
     },
+    verificationCode:{
+      type:String,
+      required:true  
+    },
+    isVerified:{
+        type:Boolean,
+        default:false
+    },
+    
     bicycle:{
         type:Schema.Types.ObjectId,
         ref:"Cycle"
