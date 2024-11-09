@@ -1,0 +1,4 @@
+
+const isVerified =(req,res)=>{
+    
+}

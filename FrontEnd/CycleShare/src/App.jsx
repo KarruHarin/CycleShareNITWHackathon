@@ -10,6 +10,9 @@ import Sidebar from './Sidebar/Sidebar';
 import { userContext } from './Context/userContext';
 import './index.css';
 import Cycle from './Cycle/Cycle';
+import UserProfile from './user/userProfile';
+import AddCycleForm from './Cycle/AddNewCycle';
+import BookingHistory from './user/userHistory';
 
 const Layout = ({ children }) => (
   <div>
@@ -21,33 +24,36 @@ const Layout = ({ children }) => (
 );
 
 function App() {
-  const [user, setUser] = useState({});
 
   return (
-    <userContext.Provider value={{ user, setUser }}>
-      <Routes>
-        <Route path="/" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/otp" element={<Verification />} />
-        <Route path="/cycles/:id" element={<Cycle />} />
-        <Route
-          path="/homepage"
-          element={
-            <Layout>
-              <HomePage />
-            </Layout>
-          }
-        />
-        <Route
-          path="/rent"
-          element={
-            <Layout>
-              <RentCyclePage />
-            </Layout>
-          }
-        />
-      </Routes>
-    </userContext.Provider>
+    // <Routes>
+      
+    //   <Route path="/" element={<Register />} />
+    //   <Route path="/login" element={<Login />} />
+    //   <Route path="/otp" element={<Verification />} />
+    //   <Route path="/cycles/:id" element={<Cycle/>}/>/
+    //   <Route path='/user' element={<UserProfile/>}/>
+    //   <Route path='/addCycle' element={<AddCycleForm/>}/>
+    //   <Route path='/history' element={<BookingHistory/>}/>
+    
+    //   <Route
+    //     path="/homepage"
+    //     element={
+    //       <Layout>
+    //         <HomePage />
+    //       </Layout>
+    //     }
+    //   />
+    //   <Route
+    //     path="/rent"
+    //     element={
+    //       <Layout>
+    //         <RentCyclePage/>
+    //       </Layout>
+    //     }
+    //   />
+    // </Routes>
+    <></>
   );
 }
 
