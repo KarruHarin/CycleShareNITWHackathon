@@ -7,7 +7,7 @@ const cycleSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true, // Assuming the owner should always be present
-    },
+    }, 
     cycleDetails: {
       cycleImage:{
          type:String,

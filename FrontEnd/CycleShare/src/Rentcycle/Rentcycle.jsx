@@ -3,13 +3,12 @@ import { MapContainer, TileLayer, Marker, useMap, Popup } from 'react-leaflet';
 import io from 'socket.io-client';
 import L, { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import "./Map.css"
+import './Rentcycle.css'
+import CycleCard from '../Card/Card';
 
-export const socket = io("http://localhost:8000", {
-    autoConnect: true,
-});
 
-// Custom hook for location updates
+
+// Custom hook for location updatesgit
 const useLocation = () => {
     const [location, setLocation] = useState(null);
 
@@ -63,7 +62,8 @@ const MapCenterControl = ({ center }) => {
     return null;
 };
 
-function Map() {
+  
+function Rentcycle() {
     const userLocation = useLocation();
     const markers = [
         {
@@ -74,7 +74,7 @@ function Map() {
         {
             position: [17.979697, 79.532569],
             type: 'cycle',
-            popup: "hello this is cycle popup"
+            popup:<CycleCard  /> 
         }
     ];
 
@@ -119,4 +119,4 @@ function Map() {
     );
 }
 
-export default Map;
+export default Rentcycle    ;
