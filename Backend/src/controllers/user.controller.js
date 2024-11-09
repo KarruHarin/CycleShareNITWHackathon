@@ -18,6 +18,29 @@ const generateAccessAndRefreshToken = async (userId) => {
   }
 };
 
+
+const verifyUser = async(req,res)=>{
+  try{
+   const{email,verificationCode}= req.body;
+    sendVerificationCode(email,verificationCode);
+
+const user = await User.findOneAndUpdate({email:email,verificationCode:verificationCode},{isVerified:true})
+if(user&&user.isVerified===false){
+await user.save()
+console.log("Verified")  
+res.json({message:"verified"})
+}
+else{
+  if(user.isVerified===true){
+    res.json({message:"Already verified"})
+  }
+  console.log("user",user);
+}
+}catch(e){
+  console.log(e);
+}
+
+}
 const registerUser = async (req, res) => {
   try {
     const { username, email, password,college } = req.body;
@@ -36,11 +59,11 @@ let verificationCode = Math.floor(100000+Math.random()*900000).toString();
     // Create new user
     const user = await User.create({ username, email, password,college,verificationCode});
 
-    sendVerificationCode(email,verificationCode);
     // Retrieve created user without sensitive information
     const createdUser = await User.findById(user._id).select(
       "-password -refreshToken"
     );
+sendVerificationCode(email,verificationCode)
 
     if (!createdUser) {
       throw new ApiError(500, "User creation failed");
@@ -176,4 +199,4 @@ const refreshAccessToken = async (req, res) => {
   }
 };
 
-export {generateAccessAndRefreshToken,registerUser,loginUser,logoutUser,refreshAccessToken};
+export {generateAccessAndRefreshToken,verifyUser,registerUser,loginUser,logoutUser,refreshAccessToken};

@@ -71,5 +71,15 @@ const editCycle = async (req,res)=>{
     console.error("Problem in editing Cycle:", error);
    }
 }
-
-export {registerCycle,editCycle};
+const getDetails=async(req,res)=>{
+try{
+const {id} = req.body
+const cycle = await Cycle.findById(id)
+if(cycle){
+  res.send(cycle)
+}
+}catch(e){
+console.log(e)
+}
+}
+export {registerCycle,getDetails,editCycle};
