@@ -22,6 +22,7 @@ const generateAccessAndRefreshToken = async (userId) => {
 const verifyUser = async(req,res)=>{
   try{
    const{email,verificationCode}= req.body;
+   console.log(email,verificationCode)
     sendVerificationCode(email,verificationCode);
 
 const user = await User.findOneAndUpdate({email:email,verificationCode:verificationCode},{isVerified:true})
@@ -79,7 +80,7 @@ sendVerificationCode(email,verificationCode)
 
 const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const {email,password} = req.body;
 
     // Validate input fields
     if (!email || !password) {

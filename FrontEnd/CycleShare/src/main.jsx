@@ -1,5 +1,5 @@
 // src/index.js
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';  // Import the new ReactDOM from 'react-dom/client'
 import { BrowserRouter, createBrowserRouter } from 'react-router-dom';
 import App from './App';
@@ -69,6 +69,8 @@ const router = createBrowserRouter([
 // Render the app inside the root
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-        <RouterProvider router={router} />
+ 
+    <RouterProvider router={router} />
+
   </React.StrictMode>
 );
