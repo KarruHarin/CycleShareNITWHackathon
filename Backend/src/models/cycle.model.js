@@ -9,6 +9,10 @@ const cycleSchema = new Schema(
       required: true, // Assuming the owner should always be present
     }, 
     cycleDetails: {
+      cycleImage:{
+         type:String,
+         required:true
+      },
       color: {
         type: String,
         required: true,
@@ -24,6 +28,7 @@ const cycleSchema = new Schema(
       cycleCompany: {
       type: String,
       required: true,
+      default:"Unknown"
      },
     },
     condition : {
@@ -62,7 +67,19 @@ const cycleSchema = new Schema(
     isAvailable:{
       type:Boolean,
       required:true
-    }
+    },
+    rating:{
+      type:Number,
+      enum:[1,2,3,4,5]
+   },
+   reviews:{
+       type:Schema.Types.ObjectId,
+       ref:"Review"
+   },
+   map:{
+    type:String,
+   }
+   
   },
   { timestamps: true }
 );

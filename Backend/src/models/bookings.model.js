@@ -10,7 +10,11 @@ const bookingSchema = new Schema(
       type: String,
       required: true,
     },
-    bookDate: {
+    cycle:{
+      type:Schema.Types.ObjectId,
+      ref:"Cycle"
+    },
+    bookingDate: {
       type: Date,
     },
     bookingTimeSlot: {
@@ -25,9 +29,10 @@ const bookingSchema = new Schema(
     },
     bookingCost: {
       type: Number,
+      required:true
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Booking",bookingSchema);
+export const Booking =  mongoose.model("Booking",bookingSchema);
