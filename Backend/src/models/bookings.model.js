@@ -17,6 +17,10 @@ const bookingSchema = new Schema(
     bookingDate: {
       type: Date,
     },
+    hireProgress:{
+          type:String,
+          enum:["Booked","Completed"]
+    },
     bookingTimeSlot: {
       startTime: {
         type: Date, // Date type will include both the date and time
