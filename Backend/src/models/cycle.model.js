@@ -66,5 +66,4 @@ const cycleSchema = new Schema(
   },
   { timestamps: true }
 );
-
-export const Cycle = mongoose.model("Cycle", userSchema);
+export const Cycle =  mongoose.model("Cycle", cycleSchema);

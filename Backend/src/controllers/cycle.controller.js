@@ -3,7 +3,6 @@ import {User} from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
-
 const registerCycle = async (req, res) => {
   try {
     //cycleDetails and codition contain sub objects in them parse data properly from frontend
