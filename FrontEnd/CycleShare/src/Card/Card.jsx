@@ -13,7 +13,7 @@ const CycleCard = ({ cycle }) => {
       <img src={cycleShareLogo} alt={name} className="w-full h-36 object-cover" />
       <div className="p-4">
         <h3 className="text-lg font-semibold text-gray-800">{cycle.cycleDetails.cycleCompany}</h3>
-        <p className="text-gray-600 text-sm mt-2">{cycle.rating}</p>
+        <p className="text-gray-600 text-sm mt-2">rating {cycle.rating}</p>
         <p className="text-indigo-600 font-semibold mt-4">Cost per hour: ₹{cycle.costPerHour}</p>
         <button onClick={() => navigate(`/cycles/${cycle._id}`)} className="w-full mt-4 px-4 py-2 bg-indigo-600 text-white rounded-md font-semibold hover:bg-indigo-700 transition duration-200">
           Rent Now

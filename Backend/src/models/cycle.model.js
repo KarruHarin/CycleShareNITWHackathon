@@ -66,8 +66,8 @@ const cycleSchema = new Schema(
     },
     rating: {
       type: Number,
-      enum: [1, 2, 3, 4, 5],
-      min: 1,
+      enum: [0,1, 2, 3, 4, 5],
+      min: 0,
       max: 5,
       default: 0,
     },
