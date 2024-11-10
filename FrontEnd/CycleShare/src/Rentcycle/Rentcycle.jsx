@@ -203,7 +203,7 @@ function Rentcycle() {
                     const hasValidCoordinates = marker.map.coordinates[0] && marker.map.coordinates[1];
                     console.log("Rendering marker:", marker.map?.coordinates?.[0]);
 
-                    return hasValidCoordinates ? (
+                    return hasValidCoordinates && marker.isAvailable ? (
                         <Marker
                             key={index}
                             position={[marker.map.coordinates[1],marker.map.coordinates[0] ]}

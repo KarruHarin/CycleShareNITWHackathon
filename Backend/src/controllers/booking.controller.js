@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import SocketService from "../services/socket.service.js";
 import { socketService } from "../app.js";
 import { User } from "../models/user.model.js";
+import { Cycle } from "../models/cycle.model.js";
 const bookACycle = async (req, res) => {
   try {
     const { lender, tenant, cycle, bookingDate, bookingTimeSlot, bookingCost } = req.body;
@@ -14,12 +15,17 @@ const bookACycle = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Lender not found' });
     }
 
-    if (bookingCost > user.coins) {
-      return res.json({
-        success: false,
-        message: "Insufficient balance"
-      });
-    }
+    const cycle1 = await Cycle.findById(cycle);
+    cycle1.isAvailable = false;
+
+    cycle1.save();
+
+    // if (bookingCost > user.coins) {
+    //   return res.json({
+    //     success: false,
+    //     message: "Insufficient balance"
+    //   });
+    // }
 
     // Create new booking
     const newBooking = new Booking({
@@ -84,9 +90,9 @@ const updateBookingStatus = async (req, res) => {
     }
 
     if (status === 'accepted') {
-      // Update coins for lender and tenant
-      lenderUser.coins += bookingCost;
-      tenantUser.coins -= bookingCost;
+      // // Update coins for lender and tenant
+      // lenderUser.coins += bookingCost;
+      // tenantUser.coins -= bookingCost;
 
       // Save updated user data
       await lenderUser.save();
