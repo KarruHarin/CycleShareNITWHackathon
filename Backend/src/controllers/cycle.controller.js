@@ -80,7 +80,7 @@ const editCycle = async (req,res)=>{
 
 const getCycleDetails = async (req, res) => {
   try {
-      const { cycleId } = req.params;
+      const { cycleId } = req.body;
 
       // Validate cycleId
       if (!mongoose.Types.ObjectId.isValid(cycleId)) {
@@ -187,6 +187,24 @@ const getCycleDetails = async (req, res) => {
       );
   }
 };
+const getAllCycles = async(req,res)=>{
+try{
+  const {college} = req.body
+  const data = await Cycle.find().populate("owner","college")
+  if(data){
+    const filter = data.filter((d)=>{d.college ===college})
+    return res.status(200).json(
+      new ApiResponse(
+          200,
+          filter,
+          "fetched successfully"
+      )
+  );
+  }
+}catch(e){
+  console.log(e)
+}
+}
 
 
-export {registerCycle,editCycle,getCycleDetails};
+export {registerCycle,editCycle,getCycleDetails,getAllCycles};
