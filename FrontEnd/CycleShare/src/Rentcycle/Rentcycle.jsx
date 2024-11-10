@@ -1,117 +1,160 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { MapContainer, TileLayer, Marker, useMap, Popup } from 'react-leaflet';
-import io from 'socket.io-client';
-import L, { Icon } from 'leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import './Rentcycle.css'
 import CycleCard from '../Card/Card';
+import { userContext } from '../Context/userContext';
 
+// Fix for default marker icons
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: '/marker-icon-2x.png',
+    iconUrl: '/marker-icon.png',
+    shadowUrl: '/marker-shadow.png',
+});
 
-
-// Custom hook for location updatesgit
 const useLocation = () => {
     const [location, setLocation] = useState(null);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         if ("geolocation" in navigator) {
             const watchId = navigator.geolocation.watchPosition(
                 (position) => {
-                    const newLocation = {
+                    setLocation({
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
-                    };
-                    setLocation(newLocation);
+                    });
+                    setError(null);
                 },
-                (error) => console.error('Error getting location:', error),
-                {
-                    enableHighAccuracy: true,
-                    maximumAge: 30000,
-                    timeout: 27000
-                }
+                (error) => {
+                    console.error('Error getting location:', error);
+                    setError(error.message);
+                },
+                { enableHighAccuracy: true, maximumAge: 30000, timeout: 27000 }
             );
 
             return () => navigator.geolocation.clearWatch(watchId);
+        } else {
+            setError("Geolocation is not supported by your browser");
         }
     }, []);
 
-    return location;
+    return { location, error };
 };
 
-
-
-
 // Custom markers
-const bicycleIcon = new Icon({
-    iconUrl: '/bicycle.png', // Make sure to add these images to your public folder
-    iconSize: [38, 38]
+const bicycleIcon = new L.Icon({
+    iconUrl: '/bicycle.png',
+    iconSize: [38, 38],
+    iconAnchor: [19, 38],
+    popupAnchor: [0, -38]
 });
 
-const userIcon = new Icon({
-    iconUrl: '/placeholder.png', // Make sure to add these images to your public folder
-    iconSize: [38, 38]
+const userIcon = new L.Icon({
+    iconUrl: '/placeholder.png',
+    iconSize: [38, 38],
+    iconAnchor: [19, 38],
+    popupAnchor: [0, -38]
 });
 
-// Map center update component
 const MapCenterControl = ({ center }) => {
     const map = useMap();
+    
     useEffect(() => {
-        if (center) {
+        if (center && map) {
             map.setView(center, 15);
         }
     }, [center, map]);
+    
     return null;
 };
 
-  
 function Rentcycle() {
-    const userLocation = useLocation();
-    const markers = [
-        {
-            position: [17.987004, 79.533027],
-            type: 'cycle',
-            popup: "hello this is user popup"
-        },
-        {
-            position: [17.979697, 79.532569],
-            type: 'cycle',
-            popup:<CycleCard  /> 
+    const { location, error: locationError } = useLocation();
+    const { user } = useContext(userContext);
+    const [college, setCollege] = useState(null);
+    const [markers, setMarkers] = useState([]);
+    const [error, setError] = useState(null);
+    const defaultCenter = { lat: 51.505, lng: -0.09 }; // Default to London
+
+    useEffect(() => {
+        const userId = localStorage.getItem('id');
+        if (!userId) {
+            setError("User ID not found");
+            return;
         }
-    ];
 
+        fetch("http://localhost:8000/user/getUser", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: userId })
+        })
+        .then((res) => {
+            if (!res.ok) throw new Error('Failed to fetch user data');
+            return res.json();
+        })
+        .then((data) => setCollege(data.college))
+        .catch((err) => setError(err.message));
+    }, []);
 
-    if (!userLocation) {
-        return <div>Loading location...</div>;
+    useEffect(() => {
+        if (college) {
+            console.log("college = ",college)
+            fetch("http://localhost:8000/cycle/getAllCycles", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ college: college })
+            })
+            .then((res) => {
+                if (!res.ok) throw new Error('Failed to fetch cycles');
+                return res.json();
+            })
+            .then((cycles) =>{ 
+                console.log(cycles)
+                setMarkers(cycles)})
+            .catch((err) => setError(err.message));
+        }
+    }, [college]);
+
+    if (locationError) {
+        return <div className="error-message">Error getting location: {locationError}</div>;
+    }
+
+    if (error) {
+        return <div className="error-message">Error: {error}</div>;
     }
 
     return (
         <div style={{ height: '100vh', width: '100vw' }}>
             <MapContainer
-                center={userLocation}
+                center={location || defaultCenter}
                 zoom={15}
                 style={{ height: '100%', width: '100%' }}
             >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='© OpenStreetMap contributors'
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 />
-                <MapCenterControl center={userLocation} />
                 
-                {/* Current user location marker */}
-                <Marker
-                    position={[userLocation.lat, userLocation.lng]}
-                    icon={userIcon}
-                >
-                    <Popup>Your current location</Popup>
-                </Marker>
+                {location && (
+                    <>
+                        <MapCenterControl center={location} />
+                        <Marker position={[location.lat, location.lng]} icon={userIcon}>
+                            <Popup>Your current location</Popup>
+                        </Marker>
+                    </>
+                )}
 
-                {/* Other markers */}
                 {markers.map((marker, index) => (
                     <Marker
-                        key={index}
-                        position={marker.position}
-                        icon={marker.type === 'cycle' ? bicycleIcon : userIcon}
+                        key={marker.id || index}
+                        position={[marker.lat, marker.lng]}
+                        icon={bicycleIcon}
                     >
-                        <Popup>{marker.popup}</Popup>
+                        <Popup>
+                            {marker.description || <CycleCard cycleData={marker} />}
+                        </Popup>
                     </Marker>
                 ))}
             </MapContainer>
@@ -119,4 +162,4 @@ function Rentcycle() {
     );
 }
 
-export default Rentcycle    ;
+export default Rentcycle;

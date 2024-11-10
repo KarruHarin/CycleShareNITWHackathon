@@ -1,7 +1,6 @@
-// src/index.js
-import React, { useState } from 'react';
-import ReactDOM from 'react-dom/client';  // Import the new ReactDOM from 'react-dom/client'
-import { BrowserRouter, createBrowserRouter } from 'react-router-dom';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import App from './App';
 import { HomeIcon, LogIn } from 'lucide-react';
 import Layout from './Layout/Layout';
@@ -13,64 +12,69 @@ import UserProfile from './user/userProfile';
 import Cycle from './Cycle/Cycle';
 import Register from './Register/Register';
 import Verification from './Verification/Verification';
-import { RouterProvider } from 'react-router-dom';
 import Login from './Login/Login';
+import { UserProvider } from './Context/userContext'; // Import UserProvider
+
+// Create a wrapper component that includes the UserProvider
+const WrappedApp = ({ children }) => {
+  return (
+    <UserProvider>
+      {children}
+    </UserProvider>
+  );
+};
 
 const router = createBrowserRouter([
   {
-    path:"/",
-    element:<Layout/>,
-    children:[
+    path: "/",
+    element: <WrappedApp><Layout /></WrappedApp>,
+    children: [
       {
-        path:"",
-        element:<HomePage/>
+        path: "",
+        element: <HomePage />
       },
       {
-        path:"/homepage",
-        element:<HomePage/>
+        path: "/homepage",
+        element: <HomePage />
       },
       {
-        path:"/rent",
-        element:<Rentcycle/>
+        path: "/rent",
+        element: <Rentcycle />
       },
       {
-        path:"/history",
-        element:<BookingHistory/>
+        path: "/history",
+        element: <BookingHistory />
       },
       {
-        path:"/addCycle",
-        element:<AddCycleForm/>
+        path: "/addCycle",
+        element: <AddCycleForm />
       },
       {
-        path:"/user",
-        element:<UserProfile/>
+        path: "/user",
+        element: <UserProfile />
       },
       {
-        path:"/cycles/:id",
-        element:<Cycle/>
+        path: "/cycles/:id",
+        element: <Cycle />
       }
     ]
   },
   {
-    path:"/login",
-    element:<Login/>
+    path: "/login",
+    element: <WrappedApp><Login /></WrappedApp>
   },
   {
-    path:"/register",
-    element:<Register/>
+    path: "/register",
+    element: <WrappedApp><Register /></WrappedApp>
   },
   {
-    path:"/otp",
-    element:<Verification/>
+    path: "/otp",
+    element: <WrappedApp><Verification /></WrappedApp>
   }
-])
+]);
 
-
-// Render the app inside the root
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
- 
     <RouterProvider router={router} />
-
   </React.StrictMode>
 );
