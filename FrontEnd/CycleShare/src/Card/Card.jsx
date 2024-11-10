@@ -3,14 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 const CycleCard = ({ cycle }) => {
     const navigate  = useNavigate()
-    const demoCycle = {
-        id: '4',
-        image: 'https://via.placeholder.com/150x100?text=Cycle+4',
-        name: 'Electric Bike',
-        costPerHour: 80,
-        description: 'An eco-friendly electric bike, perfect for effortless commutes.'
-      }
-  const {id, image, name, costPerHour, description } = demoCycle;
+  const {id, image, name, costPerHour, description } = cycle;
 
   
   return (
