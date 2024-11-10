@@ -7,7 +7,7 @@ import Verification from './Verification/Verification';
 import HomePage from './Homepage/Homepage';
 import RentCyclePage from './Rentcycle/Rentcycle'; 
 import Sidebar from './Sidebar/Sidebar';
-import { userContext } from './Context/userContext';
+import { userContext } from './context/userContext';
 import './index.css';
 import Cycle from './Cycle/Cycle';
 import UserProfile from './user/userProfile';

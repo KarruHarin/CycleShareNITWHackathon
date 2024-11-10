@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { FaBicycle, FaShareAlt, FaSignOutAlt, FaHistory, FaUser } from 'react-icons/fa';
 
 const Sidebar = ({ userName, collegeName }) => {
+  
   return (
     <motion.div
       className="fixed top-0 left-0 h-full w-64 bg-amber-50 text-black shadow-lg p-8 flex flex-col border-r border-black"
@@ -14,7 +15,7 @@ const Sidebar = ({ userName, collegeName }) => {
       {/* User Info at the Top with decorative border */}
       <div className="text-center mb-10 pb-6 border-b-2 border-black">
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center border-2 border-black">
+          <div className="w-16 h-16 bg-amber-200 rounded-full flex items-center justify-center border-2 border-black" >
             <FaUser className="text-2xl text-black" />
           </div>
         </div>

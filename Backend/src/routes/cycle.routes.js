@@ -7,7 +7,7 @@ import { getCycleDetails } from "../controllers/cycle.controller.js";
 const router = Router();
 router.route('/registerCycle').post(registerCycle);
 router.route('/editCycle').post(editCycle);
-router.route("/details").get(getCycleDetails);
+router.route("/details").post(getCycleDetails);
 router.route("/getAllCycles").post(getAllCycles);
 
 export default router;

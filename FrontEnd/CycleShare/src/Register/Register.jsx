@@ -3,7 +3,7 @@ import React, { useState,useContext } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { userContext } from '../Context/userContext';
+import { userContext } from '../context/userContext';
 
 const states = [
   { "state_name": "Andaman and Nicobar Islands", "abbreviation": "AN" },
@@ -98,7 +98,7 @@ const {setUser} = useContext(userContext)
     const res = await axios.post("http://localhost:8000/user/register",{username:name,email:email,password:password,college:college})
    console.log(res)
    setUser(res.data.data)
-   navigate(`/otp`);
+   navigate("/otp");
     // navigate('/login');
     }catch(e){
         console.log(e)

@@ -13,7 +13,7 @@ import Cycle from './Cycle/Cycle';
 import Register from './Register/Register';
 import Verification from './Verification/Verification';
 import Login from './Login/Login';
-import { UserProvider } from './Context/userContext'; // Import UserProvider
+import { UserProvider } from './context/userContext'; // Import UserProvider
 
 // Create a wrapper component that includes the UserProvider
 const WrappedApp = ({ children }) => {
@@ -54,7 +54,7 @@ const router = createBrowserRouter([
         element: <UserProfile />
       },
       {
-        path: "/cycles/:id",
+        path: "/cycles/:cycleId",
         element: <Cycle />
       }
     ]
@@ -75,6 +75,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+
     <RouterProvider router={router} />
   </React.StrictMode>
 );

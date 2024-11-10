@@ -42,6 +42,10 @@ const userSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref:"Review"
     },
+    coins:{
+       type:Number,
+       default:300
+    },
     bicycle:{
         type:Schema.Types.ObjectId,
         ref:"Cycle"

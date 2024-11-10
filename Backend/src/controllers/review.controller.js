@@ -1,6 +1,6 @@
-import { Review } from "../models/reviews.model";
-import { User } from "../models/user.model";
-import { Cycle } from "../models/cycle.model";
+import { Review } from "../models/reviews.model.js";
+import { User } from "../models/user.model.js";
+import { Cycle } from "../models/cycle.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import mongoose from "mongoose";

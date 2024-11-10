@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, useMap, Popup } from 'react-leaflet';
 import L, { Icon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import CycleCard from '../Card/Card';
-import { userContext } from '../Context/userContext';
+import { userContext } from '../context/userContext';
 
 const mapStyles = {
     width: '100%',
