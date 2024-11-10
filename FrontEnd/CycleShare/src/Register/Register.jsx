@@ -75,6 +75,7 @@ const colleges = [
   { college_name: "University of Delhi", abbreviation: "UD" },
   { college_name: "Banaras Hindu University", abbreviation: "BHU" },
   { college_name: "Jawaharlal Nehru University", abbreviation: "JNU" },
+  { college_name: "National Institute of Technology,Warangal", abbreviation: "NITW" }
 ];
 
 function Register() {

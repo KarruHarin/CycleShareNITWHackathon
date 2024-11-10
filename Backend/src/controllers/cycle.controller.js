@@ -187,24 +187,32 @@ const getCycleDetails = async (req, res) => {
       );
   }
 };
-const getAllCycles = async(req,res)=>{
-try{
-  const {college} = req.body
-  const data = await Cycle.find().populate("owner","college")
-  if(data){
-    const filter = data.filter((d)=>{d.college ===college})
+const getAllCycles = async (req, res) => {
+  try {
+    const { college } = req.body;
+    const data = await Cycle.find().populate("owner", "college");
+    
+    if (!data) {
+      return res.status(404).json(
+        new ApiResponse(404, null, "No cycles found")
+      );
+    }
+
+    console.log(data[0].owner); // for debugging
+    
+    const filter = data.filter((d) => d.owner.college === college);
+    
     return res.status(200).json(
-      new ApiResponse(
-          200,
-          filter,
-          "fetched successfully"
-      )
-  );
+      new ApiResponse(200, filter, "fetched successfully")
+    );
+
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json(
+      new ApiResponse(500, null, "Internal server error")
+    );
   }
-}catch(e){
-  console.log(e)
-}
-}
+};
 
 
 export {registerCycle,editCycle,getCycleDetails,getAllCycles};
