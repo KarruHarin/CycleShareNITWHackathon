@@ -19,7 +19,9 @@ const bookingSchema = new Schema(
     },
     status:{
       type:String,
-      enum:[accepted , rejected , pending]
+      enum:["accepted" , "rejected" , 
+        "pending"
+      ]
     },
     bookingTimeSlot: {
       startTime: {

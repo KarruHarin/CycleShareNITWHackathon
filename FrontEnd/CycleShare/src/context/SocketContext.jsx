@@ -3,20 +3,20 @@ import { io } from 'socket.io-client';
 
 const SocketContext = createContext(null);
 
-export const SocketProvider = ({ children, userId, userType }) => {
+export const SocketProvider = ({ children, userId }) => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const socketInstance = io('http://localhost:3000', {
-      auth: { userId, userType }
+      auth: { userId }
     });
 
     socketInstance.on('connect', () => {
       console.log('Socket connected');
       setIsConnected(true);
       
-      socketInstance.emit('authenticate', { userId, userType });
+      socketInstance.emit('authenticate', { userId });
     });
 
     socketInstance.on('disconnect', () => {
@@ -29,7 +29,7 @@ export const SocketProvider = ({ children, userId, userType }) => {
     return () => {
       socketInstance.disconnect();
     };
-  }, [userId, userType]);
+  }, [userId]);
 
   return (
     <SocketContext.Provider value={{ socket, isConnected }}>

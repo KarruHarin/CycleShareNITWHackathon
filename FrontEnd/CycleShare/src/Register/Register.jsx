@@ -3,7 +3,7 @@ import React, { useState,useContext } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { userContext } from '../Context/userContext';
+import { userContext } from '../context/userContext';
 
 const states = [
   { "state_name": "Andaman and Nicobar Islands", "abbreviation": "AN" },
@@ -81,11 +81,12 @@ function Register() {
   const [selectedState, setSelectedState] = useState('');
   const [selectedCollege, setSelectedCollege] = useState('');
   const navigate = useNavigate();
-const {setUser} = useContext(userContext)
+  
   const handleStateChange = (e) => setSelectedState(e.target.value);
   const handleCollegeChange = (e) => setSelectedCollege(e.target.value);
 
   const handleSubmit = async(e) => {
+    const {setUser} = useContext(userContext);
     e.preventDefault();
     let name= e.target[0].value
     let email=e.target[1].value

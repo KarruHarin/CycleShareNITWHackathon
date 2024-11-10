@@ -2,13 +2,16 @@ import React, { useState,useContext } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
-import { userContext } from '../Context/userContext'; 
+import { userContext } from '../context/userContext'; 
 import axios from 'axios';
 
 function Verification() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const navigate = useNavigate();
-const {user} = useContext(userContext)
+  const {user} = useContext(userContext);
+  if(!user){
+    navigate('/login')
+  }
   // Handle OTP input change
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
