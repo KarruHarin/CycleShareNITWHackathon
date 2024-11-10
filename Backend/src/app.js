@@ -38,11 +38,13 @@ const socketService = new SocketService(server);
 
 import userRouter from './routes/user.routes.js';
 import cycleRouter from './routes/cycle.routes.js';
-import bookingRouter from './routes/booking.routes.js'
+import bookingRouter from './routes/booking.routes.js';
+import reviewRouter from './routes/review.routes.js'
 
 app.use("/user",userRouter);
 app.use("/cycle",cycleRouter);
-app.use("/booking",bookingRouter)
+app.use("/booking",bookingRouter);
+app.use("/review",reviewRouter);
 
 
 export {server,app,socketService}

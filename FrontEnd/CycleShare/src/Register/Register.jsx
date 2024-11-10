@@ -82,12 +82,11 @@ function Register() {
   const [selectedState, setSelectedState] = useState('');
   const [selectedCollege, setSelectedCollege] = useState('');
   const navigate = useNavigate();
-  
+const {setUser} = useContext(userContext)
   const handleStateChange = (e) => setSelectedState(e.target.value);
   const handleCollegeChange = (e) => setSelectedCollege(e.target.value);
 
   const handleSubmit = async(e) => {
-    const {setUser} = useContext(userContext);
     e.preventDefault();
     let name= e.target[0].value
     let email=e.target[1].value
@@ -99,7 +98,7 @@ function Register() {
     const res = await axios.post("http://localhost:8000/user/register",{username:name,email:email,password:password,college:college})
    console.log(res)
    setUser(res.data.data)
-   navigate(`/otp`);
+   navigate("/otp");
     // navigate('/login');
     }catch(e){
         console.log(e)

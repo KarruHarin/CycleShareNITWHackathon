@@ -4,12 +4,13 @@ import axios from 'axios';
 import { Star } from 'lucide-react';
 import { useContext } from 'react';
 import { userContext } from '../context/userContext';
+import cycleLogo from '../assets/cycleShareLogo.jpg';
 
 const CycleDetails = () => {
   const { cycleId } = useParams();
   const [cycleDetails, setCycleDetails] = useState(null);
   const [loading, setLoading] = useState(true);
-  const {user} = useContext(userContext)
+  const {user} = useContext(userContext);
   const [error, setError] = useState(null);
   const [bookingData, setBookingData] = useState({
     startTime: '',
@@ -17,16 +18,21 @@ const CycleDetails = () => {
     bookingDate: new Date().toISOString().split('T')[0]
   });
   const [totalCost, setTotalCost] = useState(0);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewData, setReviewData] = useState({
+    rating: 5,
+    reviewDescription: ''
+  });
 
-  const id = localStorage.getItem("id")
-  console.log("FrontEnd ",cycleId);
+  const id = localStorage.getItem("id");
+  console.log("FrontEnd ", cycleId);
   
   useEffect(() => {
     const fetchCycleDetails = async () => {
       console.log(cycleId);
       
       try {
-        const response = await axios.post('http://localhost:8000/cycle/details', {cycleId });
+        const response = await axios.post('http://localhost:8000/cycle/details', {cycleId});
         
         if (response.data.statusCode === 200) {
           setCycleDetails(response.data.data);
@@ -69,7 +75,7 @@ const CycleDetails = () => {
     try {
       const bookingPayload = {
         lender: cycleDetails.owner._id,
-        tenant: id, // Replace with actual user ID from auth context
+        tenant: id,
         cycle: cycleId,
         bookingDate: bookingData.bookingDate,
         bookingTimeSlot: {
@@ -91,6 +97,29 @@ const CycleDetails = () => {
       }
     } catch (error) {
       alert(error.response?.data?.message || 'Failed to create booking');
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8000/review/write', {
+        typeOfReview: 'cycle',
+        from: id,
+        to: cycleId,
+        rating: reviewData.rating,
+        reviewDescription: reviewData.reviewDescription
+      });
+
+      if (response.data.statusCode === 201) {
+        const updatedDetails = await axios.post('http://localhost:8000/cycle/details', {cycleId});
+        setCycleDetails(updatedDetails.data.data);
+        setShowReviewForm(false);
+        setReviewData({ rating: 5, reviewDescription: '' });
+        alert('Review submitted successfully!');
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || 'Failed to submit review');
     }
   };
 
@@ -123,7 +152,7 @@ const CycleDetails = () => {
             </div>
 
             <img 
-              src="/api/placeholder/600/400" 
+              src={cycleLogo} 
               alt="Cycle"
               className="w-full rounded-lg mb-4"
             />
@@ -208,9 +237,62 @@ const CycleDetails = () => {
               </button>
             </div>
 
-            {/* Reviews Section */}
-            <div className="mt-8">
-              <h3 className="text-xl font-bold mb-4">Recent Reviews</h3>
+            {/* Reviews Section with Add Review Button */}
+            <div className="mt-8 border-t pt-8">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold">Recent Reviews</h3>
+                <button
+                  onClick={() => setShowReviewForm(!showReviewForm)}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  {showReviewForm ? 'Cancel Review' : 'Write a Review'}
+                </button>
+              </div>
+
+              {/* Review Form */}
+              {showReviewForm && (
+                <form onSubmit={handleReviewSubmit} className="mb-6 bg-gray-50 p-4 rounded-lg">
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block mb-2">Rating</label>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`h-6 w-6 cursor-pointer ${
+                              star <= reviewData.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-300'
+                            }`}
+                            onClick={() => setReviewData(prev => ({...prev, rating: star}))}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block mb-2">Your Review</label>
+                      <textarea
+                        value={reviewData.reviewDescription}
+                        onChange={(e) => setReviewData(prev => ({
+                          ...prev,
+                          reviewDescription: e.target.value
+                        }))}
+                        className="w-full p-2 border rounded min-h-[100px]"
+                        placeholder="Share your experience with this cycle..."
+                        required
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700"
+                    >
+                      Submit Review
+                    </button>
+                  </div>
+                </form>
+              )}
+
+              {/* Existing Reviews List */}
               <div className="space-y-4">
                 {cycleDetails.reviews.recent.map((review, index) => (
                   <div key={index} className="border-b pb-4">
@@ -230,8 +312,13 @@ const CycleDetails = () => {
                           ))}
                         </div>
                       </div>
+                      <span className="text-sm text-gray-500">
+                        {new Date(review.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
-                    <p className="mt-2 text-gray-600">{review.comment}</p>
+                    <p className="mt-2 text-gray-600">
+                      {review.reviewDescription || review.comment}
+                    </p>
                   </div>
                 ))}
               </div>

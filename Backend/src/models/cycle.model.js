@@ -69,7 +69,7 @@ const cycleSchema = new Schema(
       enum: [1, 2, 3, 4, 5],
       min: 1,
       max: 5,
-      default: 3,
+      default: 0,
     },
     reviews: [
       {
