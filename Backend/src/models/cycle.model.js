@@ -62,7 +62,7 @@ const cycleSchema = new Schema(
     },
     isAvailable: {
       type: Boolean,
-          
+      required: true,
     },
     rating: {
       type: Number,
@@ -78,11 +78,21 @@ const cycleSchema = new Schema(
       },
     ],
     map: {
-      type: { type: String, enum: ["Point"], default: "Point" },
-      coordinates: { type: [Number], required: true }, // [longitude, latitude]
-    },
+      type: {
+        type: String,
+        enum: ['Point'], // ensures this is a Point type
+        required: true
+      },
+      coordinates: {
+        type: [Number], // longitude, latitude
+        required: true
+      }
+    }
   },
   { timestamps: true }
 );
+
+// Add a 2dsphere index for geospatial queries if needed in the future
+cycleSchema.index({ "map.bookingCoords": "2dsphere" });
 
 export const Cycle = mongoose.model("Cycle", cycleSchema);

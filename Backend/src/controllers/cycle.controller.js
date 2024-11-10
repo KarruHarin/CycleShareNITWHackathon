@@ -7,7 +7,6 @@ import mongoose from "mongoose";
 
 const registerCycle = async (req, res) => {
   try {
-    //cycleDetails and codition contain sub objects in them parse data properly from frontend
     const {
       owner,
       cycleDetails,
@@ -18,9 +17,15 @@ const registerCycle = async (req, res) => {
       costPerDay,
       isAvailable,
       map,
-
     } = req.body;
-    console.log(req.body)
+
+    // Check if booking coordinates are provided
+    if (!map || !map.bookingCoords || map.bookingCoords.lat == null || map.bookingCoords.lng == null) {
+      return res.status(400).json({
+        message: "Invalid map coordinates. Latitude and longitude are required.",
+      });
+    }
+
     // Create a new cycle document
     const newCycle = new Cycle({
       owner,
@@ -29,15 +34,16 @@ const registerCycle = async (req, res) => {
       bookingLocation,
       returningLocation,
       costPerHour,
-      isAvailable,
       costPerDay,
-      map,
+      isAvailable,
+      map: {
+        type: "Point",
+        coordinates: [map.bookingCoords.lng, map.bookingCoords.lat], // correct format: [lng, lat]
+      },
     });
 
     // Save the cycle to the database
     const savedCycle = await newCycle.save();
-
-    // Respond with success and the saved cycle details
     res.status(201).json({
       message: "Cycle registered successfully",
       cycle: savedCycle,
@@ -50,6 +56,10 @@ const registerCycle = async (req, res) => {
     });
   }
 };
+
+
+
+
 
 const editCycle = async (req,res)=>{
    try {

@@ -77,7 +77,7 @@ function Rentcycle() {
     const [college, setCollege] = useState(null);
     const [markers, setMarkers] = useState([]);
     const [error, setError] = useState(null);
-    const [debugInfo, setDebugInfo] = useState(''); // For debugging
+    const [debugInfo, setDebugInfo] = useState('');
     const defaultCenter = { lat: 20.5937, lng: 78.9629 };
 
     // Fetch user data and college
@@ -169,6 +169,15 @@ function Rentcycle() {
         fetchCycles();
     }, [college]);
 
+    // Handle cycle coordinate update
+    const handleUpdateCoordinates = (cycleId, newCoordinates) => {
+        setMarkers((prevMarkers) =>
+            prevMarkers.map((marker) =>
+                marker._id === cycleId ? { ...marker, map: { ...marker.map, coordinates: newCoordinates } } : marker
+            )
+        );
+    };
+
     return (
         <div style={containerStyles}>
             <MapContainer
@@ -191,16 +200,26 @@ function Rentcycle() {
 
                 {/* Render markers for cycles */}
                 {markers.map((marker, index) => {
-                    const hasValidCoordinates = marker.map?.coordinates?.[0] && marker.map?.coordinates?.[1];
-                    console.log("Rendering marker:", marker);
+                    const hasValidCoordinates = marker.map.coordinates[0] && marker.map.coordinates[1];
+                    console.log("Rendering marker:", marker.map?.coordinates?.[0]);
 
                     return hasValidCoordinates ? (
                         <Marker
                             key={index}
-                            position={marker.map.coordinates}
-                            icon={ bicycleIcon}
+                            position={[marker.map.coordinates[1],marker.map.coordinates[0] ]}
+                            icon={bicycleIcon}
                         >
-                            <Popup><CycleCard cycle={marker}/></Popup>
+                            <Popup>
+                                <CycleCard cycle={marker} />
+                                {/* Button to update cycle coordinates */}
+                                <button
+                                    onClick={() =>
+                                        handleUpdateCoordinates(marker._id, { lat: marker.map.coordinates[0] + 0.001, lng: marker.map.coordinates[1] + 0.001 })
+                                    }
+                                >
+                                    Update Coordinates
+                                </button>
+                            </Popup>
                         </Marker>
                     ) : null;
                 })}

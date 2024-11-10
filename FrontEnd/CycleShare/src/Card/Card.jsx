@@ -5,7 +5,7 @@ import logo from '../assets/logo.svg'
 
 const CycleCard = ({ cycle }) => {
     const navigate  = useNavigate()
-   
+  const {id, image, name, costPerHour, description } = cycle;
 
   
   return (

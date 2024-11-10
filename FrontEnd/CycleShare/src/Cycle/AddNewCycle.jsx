@@ -2,8 +2,37 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { MapPin } from 'lucide-react';
 
+
+const useLocation = () => {
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+      if ("geolocation" in navigator) {
+          const watchId = navigator.geolocation.watchPosition(
+              (position) => {
+                  const newLocation = {
+                      lat:   position.coords.latitude,
+                      lng: position.coords.longitude
+                  };
+                  setLocation(newLocation);
+              },
+              (error) => console.error('Error getting location:', error),
+              {
+                  enableHighAccuracy: true,
+                  maximumAge: 30000,
+                  timeout: 27000
+              }
+          );
+
+          return () => navigator.geolocation.clearWatch(watchId);
+      }
+  }, []);
+  return location;
+};
+
 const AddCycleForm = () => {
   const user = localStorage.getItem("id");
+  const bookingCoordinates = useLocation(); // Call useLocation here at the top of the component
 
   useEffect(() => {
     console.log("user", user);
@@ -55,27 +84,28 @@ const AddCycleForm = () => {
       console.log("Geolocation is not supported by this browser.");
     }
   }, []);
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Fetch coordinates for booking and returning locations
-    const bookingCoordinates = await getCoordinates(formData.bookingLocation);
-    const returningCoordinates = await getCoordinates(formData.returningLocation);
+    // Use current coordinates if `bookingCoordinates` is empty
+    const bookingCoords = bookingCoordinates || {
+      lat: currentCoordinates.latitude,
+      lng: currentCoordinates.longitude
+    };
 
-    // Automatically set current coordinates for booking location if not provided
     const updatedFormData = {
       ...formData,
       map: {
-        coordinates:[currentCoordinates.longitude, currentCoordinates.latitude], // Set to current coordinates if empty
-     
+         bookingCoords, 
+        // Assuming returning coordinates are handled similarly or added here
       }
     };
 
     try {
       const response = await axios.post("http://localhost:8000/cycle/registerCycle", updatedFormData);
       console.log("Cycle added successfully:", response.data);
-      
+
       // Clear form data after submission
       setFormData({
         cycleDetails: {
@@ -103,23 +133,10 @@ const AddCycleForm = () => {
     } catch (error) {
       console.error("Error adding cycle:", error);
     }
-  };
+};
 
   // Function to fetch coordinates using a geocoding API (e.g., OpenStreetMap, Google Maps API)
-  const getCoordinates = async (location) => {
-    try {
-      // Example using OpenStreetMap Nominatim API
-      const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${location}`);
-      if (response.data && response.data.length > 0) {
-        const { lon, lat } = response.data[0];
-        return [parseFloat(lon), parseFloat(lat)];
-      }
-      return [];
-    } catch (error) {
-      console.error("Error fetching coordinates:", error);
-      return [];
-    }
-  };
+
 
   const handleInputChange = (section, field, value) => {
     if (section) {
