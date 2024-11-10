@@ -42,6 +42,35 @@ else{
 }
 
 }
+const getUser = async(req, res) => {
+  try {
+    const { id } = req.body; // Corrected to req.body
+    
+    if (!id) {
+      console.log("hi")
+    }
+    if(id){
+      console.log(id)
+    const user = await User.findById(id);
+    if (user) {
+      console.log(user)
+      return res.status(200).json(
+        new ApiResponse(
+          200,
+          user,
+          "Fetched successfully"
+        )
+      );
+
+    } }else {
+      return res.status(404).json({ error: "User not found" });
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ error: "An error occurred" });
+  }
+};
+
 const registerUser = async (req, res) => {
   try {
     const { username, email, password,college } = req.body;
@@ -200,4 +229,4 @@ const refreshAccessToken = async (req, res) => {
   }
 };
 
-export {generateAccessAndRefreshToken,verifyUser,registerUser,loginUser,logoutUser,refreshAccessToken};
+export {generateAccessAndRefreshToken,getUser,verifyUser,registerUser,loginUser,logoutUser,refreshAccessToken};
