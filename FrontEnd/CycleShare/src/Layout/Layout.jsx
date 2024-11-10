@@ -11,26 +11,30 @@ import { userContext } from '../context/userContext.jsx';
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { user } = useContext(userContext);
-
+  console.log(user);
+  const id = localStorage.getItem("id")
+  const username = localStorage.getItem("username")
+  const college = localStorage.getItem("college")
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
   return (
-    <SocketProvider userId={user._id}>
+    <SocketProvider userId={id}>
       <div className="flex min-h-screen bg-gray-100">
-        {/* Sidebar */}
-        {isSidebarOpen && (
+      <div>
+      {isSidebarOpen && (
           <div className="w-64">
-            <Sidebar userName={user.name || "John Doe"} collegeName={user.collegeName || "University College"} />
+            <Sidebar userName={username || "user"} collegeName={college || "College"} />
           </div>
         )}
+
+      </div>
+        {/* Sidebar */}
+       
         
         {/* Main Content Area */}
         <div className="flex-1">
-          <button onClick={toggleSidebar} className="p-4 text-gray-700">
-            <FaBars />
-          </button>
           <NotificationContainer />
           <Outlet />
         </div>

@@ -1,7 +1,9 @@
 import {Cycle} from "../models/cycle.model.js";
+import { Review } from "../models/reviews.model.js";
 import {User} from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import mongoose from "mongoose";
 
 const registerCycle = async (req, res) => {
   try {
@@ -82,13 +84,9 @@ const getCycleDetails = async (req, res) => {
   try {
       const { cycleId } = req.body;
 
-      // Validate cycleId
-      if (!mongoose.Types.ObjectId.isValid(cycleId)) {
-          return res.status(400).json(
-              new ApiError(400, "Invalid cycle ID format")
-          );
-      }
-
+    
+      console.log(cycleId);
+      
       // Get cycle details with owner information
       const cycle = await Cycle.findById(cycleId)
           .populate({

@@ -25,6 +25,8 @@ function Login() {
      localStorage.setItem("AccessToken",res.data.data.accessToken)
      localStorage.setItem("RefreshToken",res.data.data.accessToken)
      localStorage.setItem("id",res.data.data.user._id)
+     localStorage.setItem("username",res.data.data.user.username)
+     localStorage.setItem("college",res.data.data.user.college)
      navigate("/homepage")
  
 

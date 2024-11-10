@@ -8,7 +8,7 @@ export const SocketProvider = ({ children, userId }) => {
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    const socketInstance = io('http://localhost:3000', {
+    const socketInstance = io('http://localhost:8000', {
       auth: { userId }
     });
 
